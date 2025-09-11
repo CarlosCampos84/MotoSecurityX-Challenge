@@ -1,0 +1,6 @@
+@CP4.MotoSecurityX.Api_HostAddress = http://localhost:5102
+
+GET {{CP4.MotoSecurityX.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
