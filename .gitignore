@@ -1,0 +1,31 @@
+# Rider / VS
+.idea/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build
+**/bin/
+**/obj/
+**/out/
+**/TestResults/
+
+# SO
+.DS_Store
+Thumbs.db
+
+# Logs / Coverage
+*.log
+coverage/
+*.coverage
+*.coveragexml
+
+# Segredos locais (exemplos)
+**/appsettings.*.local.json
+**/secrets.json
+
+# Node (se futuramente usar front no mono-repo)
+**/node_modules/
+**/package-lock.json
