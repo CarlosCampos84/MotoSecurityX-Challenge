@@ -1,6 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CP4.MotoSecurityX.Api", "CP4.MotoSecurityX.Api\CP4.MotoSecurityX.Api.csproj", "{F44E1E87-C40A-4FF1-805A-1B8B2368B18B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CP4.MotoSecurityX.Domain", "CP4.MotoSecurityX.Domain\CP4.MotoSecurityX.Domain.csproj", "{ED65328F-23D9-4031-8879-3E5DA824F9B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CP4.MotoSecurityX.Application", "CP4.MotoSecurityX.Application\CP4.MotoSecurityX.Application.csproj", "{E822A481-6D07-4ABA-94A9-8FACB8F89F07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CP4.MotoSecurityX.Infrastructure", "CP4.MotoSecurityX.Infrastructure\CP4.MotoSecurityX.Infrastructure.csproj", "{9188C785-340A-4129-B48F-04A012ABE366}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +19,17 @@ Global
 		{F44E1E87-C40A-4FF1-805A-1B8B2368B18B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F44E1E87-C40A-4FF1-805A-1B8B2368B18B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F44E1E87-C40A-4FF1-805A-1B8B2368B18B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED65328F-23D9-4031-8879-3E5DA824F9B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED65328F-23D9-4031-8879-3E5DA824F9B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED65328F-23D9-4031-8879-3E5DA824F9B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED65328F-23D9-4031-8879-3E5DA824F9B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E822A481-6D07-4ABA-94A9-8FACB8F89F07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E822A481-6D07-4ABA-94A9-8FACB8F89F07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E822A481-6D07-4ABA-94A9-8FACB8F89F07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E822A481-6D07-4ABA-94A9-8FACB8F89F07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9188C785-340A-4129-B48F-04A012ABE366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9188C785-340A-4129-B48F-04A012ABE366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9188C785-340A-4129-B48F-04A012ABE366}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9188C785-340A-4129-B48F-04A012ABE366}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
