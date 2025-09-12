@@ -13,24 +13,37 @@ public class Patio
 
     public Patio(string nome, string endereco)
     {
-        if (string.IsNullOrWhiteSpace(nome)) throw new ArgumentException("Nome inválido");
-        if (string.IsNullOrWhiteSpace(endereco)) throw new ArgumentException("Endereço inválido");
+        if (string.IsNullOrWhiteSpace(nome)) throw new ArgumentException("Nome inválido", nameof(nome));
+        if (string.IsNullOrWhiteSpace(endereco)) throw new ArgumentException("Endereço inválido", nameof(endereco));
         Nome = nome.Trim();
         Endereco = endereco.Trim();
     }
 
+    /// <summary>
+    /// Admite a moto neste pátio, mantendo consistência do agregado.
+    /// </summary>
     public void AdmitirMoto(Moto moto)
     {
         if (moto is null) throw new ArgumentNullException(nameof(moto));
-        if (_motos.Any(m => m.Id == moto.Id)) return;
+
+        // se já está neste pátio, não duplica nem reatribui desnecessariamente
+        if (moto.DentroDoPatio && moto.PatioId == Id)
+            return;
 
         moto.EntrarNoPatio(Id);
-        _motos.Add(moto);
+
+        if (!_motos.Any(m => m.Id == moto.Id))
+            _motos.Add(moto);
     }
 
+    /// <summary>
+    /// Remove a moto deste pátio, se presente.
+    /// </summary>
     public void RemoverMoto(Moto moto)
     {
         if (moto is null) throw new ArgumentNullException(nameof(moto));
+
+        // só "sai do pátio" se ela estava listada aqui
         if (_motos.RemoveAll(m => m.Id == moto.Id) > 0)
             moto.SairDoPatio();
     }

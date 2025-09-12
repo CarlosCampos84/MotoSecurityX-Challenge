@@ -19,21 +19,40 @@ public class Moto
         DentroDoPatio = false;
     }
 
+    /// <summary>
+    /// Coloca a moto em um pátio, garantindo invariantes.
+    /// </summary>
     public void EntrarNoPatio(Guid patioId)
     {
-        DentroDoPatio = true;
+        if (patioId == Guid.Empty)
+            throw new ArgumentException("PatioId inválido.", nameof(patioId));
+
+        // idempotência: se já está no mesmo pátio, não faz nada
+        if (DentroDoPatio && PatioId == patioId)
+            return;
+
         PatioId = patioId;
+        DentroDoPatio = true;
     }
 
+    /// <summary>
+    /// Remove a moto do pátio (se estiver).
+    /// </summary>
     public void SairDoPatio()
     {
-        DentroDoPatio = false;
+        // idempotência: se já está fora, não faz nada
+        if (!DentroDoPatio && PatioId is null)
+            return;
+
         PatioId = null;
+        DentroDoPatio = false;
     }
 
     public void AtualizarModelo(string novoModelo)
     {
-        if (string.IsNullOrWhiteSpace(novoModelo)) throw new ArgumentException("Modelo inválido");
+        if (string.IsNullOrWhiteSpace(novoModelo))
+            throw new ArgumentException("Modelo inválido", nameof(novoModelo));
+
         Modelo = novoModelo.Trim();
     }
 }
