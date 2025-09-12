@@ -29,3 +29,9 @@ coverage/
 # Node (se futuramente usar front no mono-repo)
 **/node_modules/
 **/package-lock.json
+
+# SQLite (dev)
+**/*.db
+**/*.db-wal
+**/*.db-shm
+
