@@ -1,0 +1,64 @@
+using CP4.MotoSecurityX.Application.Common;
+using CP4.MotoSecurityX.Application.DTOs;
+using CP4.MotoSecurityX.Application.UseCases.Usuarios;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
+
+namespace CP4.MotoSecurityX.Api.Controllers;
+
+[ApiController]
+[Route("api/usuarios")]
+public class UsuariosController : ControllerBase
+{
+    private string Link(int page, int size) =>
+        Url.ActionLink(nameof(List), values: new { page, pageSize = size }) ?? "";
+
+    [HttpGet]
+    [ProducesResponseType(typeof(PagedResult<UsuarioDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromServices] ListUsuariosHandler handler = null!,
+        CancellationToken ct = default)
+    {
+        var result = await handler.HandleAsync(page, pageSize, Link, ct);
+        return Ok(result);
+    }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(Guid id, [FromServices] GetUsuarioByIdHandler handler, CancellationToken ct)
+    {
+        var dto = await handler.HandleAsync(id, ct);
+        return dto is null ? NotFound() : Ok(dto);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status201Created)]
+    [SwaggerRequestExample(typeof(CreateUsuarioDto), typeof(CP4.MotoSecurityX.Api.SwaggerExamples.CreateUsuarioDtoExample))]
+    public async Task<IActionResult> Create([FromBody] CreateUsuarioDto dto, [FromServices] CreateUsuarioHandler handler, CancellationToken ct)
+    {
+        var created = await handler.HandleAsync(dto, ct);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUsuarioDto dto, [FromServices] UpdateUsuarioHandler handler, CancellationToken ct)
+    {
+        var ok = await handler.HandleAsync(id, dto, ct);
+        return ok ? NoContent() : NotFound();
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(Guid id, [FromServices] DeleteUsuarioHandler handler, CancellationToken ct)
+    {
+        var ok = await handler.HandleAsync(id, ct);
+        return ok ? NoContent() : NotFound();
+    }
+}

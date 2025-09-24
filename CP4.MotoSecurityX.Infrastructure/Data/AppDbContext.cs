@@ -9,7 +9,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Moto> Motos => Set<Moto>();
     public DbSet<Patio> Patios => Set<Patio>();
-
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // MOTO
@@ -41,5 +42,13 @@ public class AppDbContext : DbContext
         patio.HasKey(x => x.Id);
         patio.Property(x => x.Nome).HasMaxLength(120).IsRequired();
         patio.Property(x => x.Endereco).HasMaxLength(200).IsRequired();
+        
+        // USUARIO
+        var usuario = modelBuilder.Entity<Usuario>();
+        usuario.ToTable("Usuarios");
+        usuario.HasKey(x => x.Id);
+        usuario.Property(x => x.Nome).HasMaxLength(120).IsRequired();
+        usuario.Property(x => x.Email).HasMaxLength(200).IsRequired();
+        usuario.HasIndex(x => x.Email).IsUnique();
     }
 }

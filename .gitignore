@@ -35,3 +35,5 @@ coverage/
 **/*.db-wal
 **/*.db-shm
 
+
+patio.json

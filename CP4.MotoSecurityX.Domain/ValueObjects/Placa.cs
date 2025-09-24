@@ -4,19 +4,21 @@ public sealed class Placa : IEquatable<Placa>
 {
     public string Value { get; }
 
-    private Placa(string value) => Value = value;
-
-    public static Placa Create(string raw)
+    // Construtor PÚBLICO com validação
+    public Placa(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
-            throw new ArgumentException("Placa não pode ser vazia.");
+            throw new ArgumentException("Placa não pode ser vazia.", nameof(raw));
 
         var norm = raw.Trim().ToUpperInvariant().Replace("-", "");
-        if (norm.Length is < 7 or > 8) // ajuste conforme regra que decidir usar
-            throw new ArgumentException("Placa em formato inválido.");
+        if (norm.Length is < 7 or > 8) // ajuste se quiser ser mais estrito
+            throw new ArgumentException("Placa em formato inválido.", nameof(raw));
 
-        return new Placa(norm);
+        Value = norm;
     }
+
+    // Factory opcional
+    public static Placa Create(string raw) => new Placa(raw);
 
     public override string ToString() => Value;
 
@@ -24,3 +26,4 @@ public sealed class Placa : IEquatable<Placa>
     public override bool Equals(object? obj) => obj is Placa p && Equals(p);
     public override int GetHashCode() => Value.GetHashCode(StringComparison.Ordinal);
 }
+

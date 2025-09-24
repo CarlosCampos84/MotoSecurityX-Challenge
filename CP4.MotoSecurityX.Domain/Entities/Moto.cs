@@ -47,12 +47,18 @@ public class Moto
         PatioId = null;
         DentroDoPatio = false;
     }
-
-    public void AtualizarModelo(string novoModelo)
+    public void AtualizarModelo(string modelo)
     {
-        if (string.IsNullOrWhiteSpace(novoModelo))
-            throw new ArgumentException("Modelo inválido", nameof(novoModelo));
-
-        Modelo = novoModelo.Trim();
+        if (string.IsNullOrWhiteSpace(modelo))
+            throw new ArgumentException("Modelo inválido");
+        Modelo = modelo.Trim();
     }
+
+    public void AtualizarPlaca(string placa)
+    {
+        if (string.IsNullOrWhiteSpace(placa))
+            throw new ArgumentException("Placa inválida");
+        Placa = new ValueObjects.Placa(placa.Trim());
+    }
+
 }

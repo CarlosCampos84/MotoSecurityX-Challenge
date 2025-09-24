@@ -47,4 +47,19 @@ public class Patio
         if (_motos.RemoveAll(m => m.Id == moto.Id) > 0)
             moto.SairDoPatio();
     }
+    public void AtualizarNome(string nome)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+            throw new ArgumentException("Nome inválido.", nameof(nome));
+
+        Nome = nome.Trim();
+    }
+
+    public void AtualizarEndereco(string endereco)
+    {
+        if (string.IsNullOrWhiteSpace(endereco))
+            throw new ArgumentException("Endereço inválido.", nameof(endereco));
+
+        Endereco = endereco.Trim();
+    }
 }

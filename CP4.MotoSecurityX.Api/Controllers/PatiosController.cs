@@ -1,6 +1,9 @@
+using CP4.MotoSecurityX.Application.Common;
 using CP4.MotoSecurityX.Application.DTOs;
 using CP4.MotoSecurityX.Application.UseCases.Patios;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace CP4.MotoSecurityX.Api.Controllers;
 
@@ -8,21 +11,76 @@ namespace CP4.MotoSecurityX.Api.Controllers;
 [Route("api/patios")]
 public class PatiosController : ControllerBase
 {
-    [HttpGet]
-    public async Task<IActionResult> List([FromServices] ListPatiosHandler handler, CancellationToken ct)
-        => Ok(await handler.HandleAsync(ct));
+    private string Link(int page, int size) =>
+        Url.ActionLink(nameof(List), values: new { page, pageSize = size }) ?? string.Empty;
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, [FromServices] GetPatioByIdHandler handler, CancellationToken ct)
+    // GET paginado + HATEOAS
+    [HttpGet]
+    [SwaggerOperation(Summary = "Lista pátios com paginação")]
+    [ProducesResponseType(typeof(PagedResult<PatioDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromServices] ListPatiosHandler handler = null!,
+        CancellationToken ct = default)
     {
-        var patio = await handler.HandleAsync(id, ct);
-        return patio is null ? NotFound() : Ok(patio);
+        var result = await handler.HandleAsync(page, pageSize, Link, ct);
+        return Ok(result);
     }
 
+    // GET by id (preserva seu contrato)
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(PatioDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(
+        Guid id,
+        [FromServices] GetPatioByIdHandler handler,
+        CancellationToken ct)
+    {
+        var dto = await handler.HandleAsync(id, ct);
+        return dto is null ? NotFound() : Ok(dto);
+    }
+
+    // POST (com exemplo no Swagger)
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreatePatioDto dto, [FromServices] CreatePatioHandler handler, CancellationToken ct)
+    [SwaggerOperation(Summary = "Cria um pátio")]
+    [SwaggerRequestExample(typeof(CreatePatioDto), typeof(CP4.MotoSecurityX.Api.SwaggerExamples.CreatePatioDtoExample))]
+    [ProducesResponseType(typeof(PatioDto), StatusCodes.Status201Created)]
+    public async Task<IActionResult> Create(
+        CreatePatioDto dto,
+        [FromServices] CreatePatioHandler handler,
+        CancellationToken ct)
     {
         var created = await handler.HandleAsync(dto, ct);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+    // PUT
+    [HttpPut("{id:guid}")]
+    [SwaggerOperation(Summary = "Atualiza um pátio")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(
+        Guid id,
+        UpdatePatioDto dto,
+        [FromServices] UpdatePatioHandler handler,
+        CancellationToken ct)
+    {
+        var ok = await handler.HandleAsync(id, dto, ct);
+        return ok ? NoContent() : NotFound();
+    }
+
+    // DELETE
+    [HttpDelete("{id:guid}")]
+    [SwaggerOperation(Summary = "Exclui um pátio")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        [FromServices] DeletePatioHandler handler,
+        CancellationToken ct)
+    {
+        var ok = await handler.HandleAsync(id, ct);
+        return ok ? NoContent() : NotFound();
     }
 }

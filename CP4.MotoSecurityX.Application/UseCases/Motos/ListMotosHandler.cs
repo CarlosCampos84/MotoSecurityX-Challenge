@@ -1,3 +1,4 @@
+using CP4.MotoSecurityX.Application.Common;
 using CP4.MotoSecurityX.Application.DTOs;
 using CP4.MotoSecurityX.Domain.Repositories;
 
@@ -8,9 +9,22 @@ public sealed class ListMotosHandler
     private readonly IMotoRepository _repo;
     public ListMotosHandler(IMotoRepository repo) => _repo = repo;
 
-    public async Task<List<MotoDto>> HandleAsync(CancellationToken ct = default)
+    public async Task<PagedResult<MotoDto>> HandleAsync(
+        int page,
+        int pageSize,
+        Func<int, int, string> linkFactory,
+        CancellationToken ct = default)
     {
-        var list = await _repo.ListAsync(ct);
-        return list.Select(m => new MotoDto(m.Id, m.Placa.Value, m.Modelo, m.DentroDoPatio, m.PatioId)).ToList();
+        var total = await _repo.CountAsync(ct);
+        var itens = await _repo.ListAsync(page, pageSize, ct);
+
+        var data = itens.Select(m => new MotoDto(
+            m.Id,
+            m.Placa.ToString(),
+            m.Modelo,
+            m.DentroDoPatio,
+            m.PatioId));
+
+        return PagedResult<MotoDto>.Create(data, total, page, pageSize, linkFactory);
     }
 }

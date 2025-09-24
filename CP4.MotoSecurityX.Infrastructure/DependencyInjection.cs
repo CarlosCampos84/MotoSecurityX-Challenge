@@ -18,9 +18,9 @@ public static class DependencyInjection
             opt.UseSqlite(cs);
         });
 
-        services.AddScoped<IMotoRepository, EfMotoRepository>();
-        services.AddScoped<IPatioRepository, EfPatioRepository>();
-
+        services.AddScoped<IMotoRepository, MotoRepository>();
+        services.AddScoped<IPatioRepository, PatioRepository>();
+        
         return services;
     }
 }
