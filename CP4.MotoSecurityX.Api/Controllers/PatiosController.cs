@@ -4,6 +4,7 @@ using CP4.MotoSecurityX.Application.UseCases.Patios;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
+using CP4.MotoSecurityX.Api.SwaggerExamples;
 
 namespace CP4.MotoSecurityX.Api.Controllers;
 
@@ -14,9 +15,8 @@ public class PatiosController : ControllerBase
     private string Link(int page, int size) =>
         Url.ActionLink(nameof(List), values: new { page, pageSize = size }) ?? string.Empty;
 
-    // GET paginado + HATEOAS
     [HttpGet]
-    [SwaggerOperation(Summary = "Lista pátios com paginação")]
+    [SwaggerOperation(Summary = "Lista pátios", Description = "Retorna lista paginada de pátios com HATEOAS")]
     [ProducesResponseType(typeof(PagedResult<PatioDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> List(
         [FromQuery] int page = 1,
@@ -28,8 +28,8 @@ public class PatiosController : ControllerBase
         return Ok(result);
     }
 
-    // GET by id (preserva seu contrato)
     [HttpGet("{id:guid}")]
+    [SwaggerOperation(Summary = "Busca pátio por Id")]
     [ProducesResponseType(typeof(PatioDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(
@@ -41,13 +41,13 @@ public class PatiosController : ControllerBase
         return dto is null ? NotFound() : Ok(dto);
     }
 
-    // POST (com exemplo no Swagger)
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria um pátio")]
-    [SwaggerRequestExample(typeof(CreatePatioDto), typeof(CP4.MotoSecurityX.Api.SwaggerExamples.CreatePatioDtoExample))]
+    [SwaggerOperation(Summary = "Cria um pátio", Description = "Retorna 201 com Location para GET /api/patios/{id}")]
+    [SwaggerRequestExample(typeof(CreatePatioDto), typeof(CreatePatioDtoExample))]
     [ProducesResponseType(typeof(PatioDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(
-        CreatePatioDto dto,
+        [FromBody] CreatePatioDto dto,
         [FromServices] CreatePatioHandler handler,
         CancellationToken ct)
     {
@@ -55,14 +55,14 @@ public class PatiosController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // PUT
     [HttpPut("{id:guid}")]
     [SwaggerOperation(Summary = "Atualiza um pátio")]
+    [SwaggerRequestExample(typeof(UpdatePatioDto), typeof(UpdatePatioDtoExample))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(
         Guid id,
-        UpdatePatioDto dto,
+        [FromBody] UpdatePatioDto dto,
         [FromServices] UpdatePatioHandler handler,
         CancellationToken ct)
     {
@@ -70,7 +70,6 @@ public class PatiosController : ControllerBase
         return ok ? NoContent() : NotFound();
     }
 
-    // DELETE
     [HttpDelete("{id:guid}")]
     [SwaggerOperation(Summary = "Exclui um pátio")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -84,3 +83,4 @@ public class PatiosController : ControllerBase
         return ok ? NoContent() : NotFound();
     }
 }
+

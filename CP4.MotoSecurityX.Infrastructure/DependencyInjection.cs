@@ -1,5 +1,5 @@
 using CP4.MotoSecurityX.Domain.Repositories;
-using CP4.MotoSecurityX.Infrastructure.Data;        // sua pasta atual
+using CP4.MotoSecurityX.Infrastructure.Data;
 using CP4.MotoSecurityX.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +20,8 @@ public static class DependencyInjection
 
         services.AddScoped<IMotoRepository, MotoRepository>();
         services.AddScoped<IPatioRepository, PatioRepository>();
-        
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
         return services;
     }
 }

@@ -17,6 +17,7 @@ public class MotosController : ControllerBase
 
     // LIST paginada + HATEOAS
     [HttpGet]
+    [SwaggerOperation(Summary = "Lista motos", Description = "Retorna lista paginada de motos com HATEOAS")]
     [ProducesResponseType(typeof(PagedResult<MotoDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> List(
         [FromQuery] int page = 1,
@@ -28,8 +29,9 @@ public class MotosController : ControllerBase
         return Ok(result);
     }
 
-    // GET BY ID (opcional, mas útil para CreatedAtAction do POST)
+    // GET BY ID
     [HttpGet("{id:guid}")]
+    [SwaggerOperation(Summary = "Busca moto por Id")]
     [ProducesResponseType(typeof(MotoDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(
@@ -43,28 +45,28 @@ public class MotosController : ControllerBase
 
     // CREATE
     [HttpPost]
-    [SwaggerOperation(Summary = "Cria uma moto")]
+    [SwaggerOperation(Summary = "Cria uma moto", Description = "Retorna 201 com Location para GET /api/motos/{id}")]
     [SwaggerRequestExample(typeof(CreateMotoDto), typeof(CreateMotoDtoExample))]
     [ProducesResponseType(typeof(MotoDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(
-        CreateMotoDto dto,
+        [FromBody] CreateMotoDto dto,
         [FromServices] CreateMotoHandler handler,
         CancellationToken ct)
     {
-        var id = await handler.HandleAsync(dto, ct);
-        // retorna 201 com Location para o GET by id
-        return CreatedAtAction(nameof(GetById), new { id }, null);
+        var created = await handler.HandleAsync(dto, ct);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     // MOVER MOTO PARA PÁTIO
-    // (corrigido: usa MoveMotoDto – NÃO MoveMotoToPatioDto)
     [HttpPost("{id:guid}/mover")]
+    [SwaggerOperation(Summary = "Move moto para um pátio", Description = "Associa a moto a um pátio válido")]
+    [SwaggerRequestExample(typeof(MoveMotoDto), typeof(MoveMotoDtoExample))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Move(
         Guid id,
-        MoveMotoDto dto,
+        [FromBody] MoveMotoDto dto,
         [FromServices] MoveMotoToPatioHandler handler,
         CancellationToken ct)
     {
@@ -74,11 +76,13 @@ public class MotosController : ControllerBase
 
     // UPDATE
     [HttpPut("{id:guid}")]
+    [SwaggerOperation(Summary = "Atualiza uma moto")]
+    [SwaggerRequestExample(typeof(UpdateMotoDto), typeof(UpdateMotoDtoExample))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(
         Guid id,
-        UpdateMotoDto dto,
+        [FromBody] UpdateMotoDto dto,
         [FromServices] UpdateMotoHandler handler,
         CancellationToken ct)
     {
@@ -88,6 +92,7 @@ public class MotosController : ControllerBase
 
     // DELETE
     [HttpDelete("{id:guid}")]
+    [SwaggerOperation(Summary = "Exclui uma moto")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(
@@ -99,3 +104,5 @@ public class MotosController : ControllerBase
         return ok ? NoContent() : NotFound();
     }
 }
+
+

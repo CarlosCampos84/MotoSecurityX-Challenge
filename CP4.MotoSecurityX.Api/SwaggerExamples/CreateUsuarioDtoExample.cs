@@ -3,7 +3,11 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace CP4.MotoSecurityX.Api.SwaggerExamples;
 
-public class CreateUsuarioDtoExample : IExamplesProvider<CreateUsuarioDto>
+/// <summary>
+/// Exemplo de payload para criação de Usuário no Swagger.
+/// </summary>
+public sealed class CreateUsuarioDtoExample : IExamplesProvider<CreateUsuarioDto>
 {
-    public CreateUsuarioDto GetExamples() => new("Operador João", "joao@mottu.com");
+    public CreateUsuarioDto GetExamples() =>
+        new("Operador João", "joao@mottu.com");
 }

@@ -3,7 +3,11 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace CP4.MotoSecurityX.Api.SwaggerExamples;
 
-public class CreatePatioDtoExample : IExamplesProvider<CreatePatioDto>
+/// <summary>
+/// Exemplo de payload para criação de Pátio no Swagger.
+/// </summary>
+public sealed class CreatePatioDtoExample : IExamplesProvider<CreatePatioDto>
 {
-    public CreatePatioDto GetExamples() => new("Pátio Central", "Rua 1");
+    public CreatePatioDto GetExamples() =>
+        new("Pátio Central", "Rua das Entregas, 100");
 }
